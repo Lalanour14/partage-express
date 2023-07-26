@@ -2,13 +2,14 @@ import { Router } from "express";
 import Joi from 'joi';
 import { objectRepository } from "../repository/object-repository";
 import { ObjectId } from "mongodb";
+import { checkId } from "../../middleware";
 
 export const objectController = Router();
 
 objectController.get('/',async (req, res) => {
     res.json(await objectRepository.findAll());
 });
-/*objectController.get('/:id',async (req, res) => {
+objectController.get('/:id',async (req, res) => {
     if(!ObjectId.isValid(req.params.id)) {
         res.status(400).end('Invalid Id');
         return;
@@ -20,7 +21,7 @@ objectController.get('/',async (req, res) => {
     }
     res.json(object);
 
-});*/
+});
 
 objectController.post('/', async (req,res) => {
     const object = req.body;
@@ -33,9 +34,6 @@ objectController.post('/', async (req,res) => {
     res.status(201).json(object);
 });
 
-
-
-
 const objectValidation = Joi.object({
     label: Joi.string().required(),
     description: Joi.string().required(),
@@ -47,4 +45,32 @@ const objectValidation = Joi.object({
        
     }).required(),
     photo: Joi.array().items(Joi.string())
-})
+});
+objectController.delete('/:id', checkId, async (req,res)=> {
+    await objectRepository.remove(req.params.id);
+    res.status(204).end();
+});
+
+objectController.patch('/:id', checkId, async (req,res)=> {
+    const validation = objectPatchValidation.validate(req.body, {abortEarly:false});
+    if(validation.error) {
+        res.status(400).json(validation.error);
+        return;
+    }
+    await objectRepository.update(req.params.id, req.body);
+    res.json(req.body);
+});
+const objectPatchValidation = Joi.object({
+    label: Joi.string(),
+    description: Joi.string(),
+    user: Joi.object({
+        name: Joi.string(),
+        firstName: Joi.string(),
+      address: Joi.string(),
+      _id:Joi.string()
+       
+    }),
+    photo: Joi.array().items(Joi.string())
+
+});
+

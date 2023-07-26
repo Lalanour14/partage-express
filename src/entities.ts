@@ -4,7 +4,7 @@ export interface Object {
     _id?:any;
     label:string;
     descriptiion:string;
-    photo:[string];
+    photo:string[];
     user:User;
 }
 
@@ -22,7 +22,7 @@ export interface Location {
     startLoc:Date;
     endLoc:Date;
     reserObject:string;
-    stausObject:string;
+    statusObject:string;
     object:Object;
     user:User;
 }
