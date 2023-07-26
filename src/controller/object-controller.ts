@@ -39,5 +39,12 @@ objectController.post('/', async (req,res) => {
 const objectValidation = Joi.object({
     label: Joi.string().required(),
     description: Joi.string().required(),
-    /*photo: Joi.array().items(Joi.string())*/
+    user: Joi.object({
+        name: Joi.string().required(),
+        firstName: Joi.string().required(),
+      address: Joi.string().required(),
+      _id:Joi.string().required()
+       
+    }).required(),
+    photo: Joi.array().items(Joi.string())
 })
