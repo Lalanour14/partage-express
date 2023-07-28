@@ -41,7 +41,7 @@ const objectValidation = Joi.object({
         name: Joi.string().required(),
         firstName: Joi.string().required(),
       address: Joi.string().required(),
-      _id:Joi.string().required()
+      _id:Joi.string()
        
     }).required(),
     photo: Joi.array().items(Joi.string())
